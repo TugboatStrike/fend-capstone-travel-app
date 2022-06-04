@@ -112,3 +112,15 @@ app.post('/sentiment', function(request, response) {
       }).catch(e => console.log('errSend1',e))
     console.log('end sentiment');
 })
+
+async function geoCall(text) {
+  const search = encodeURIComponent(text);
+  const username = process.env.GEO_NAMES_USERNAME
+  const url = `http://api.geonames.org/searchJSON?q=${search}&maxRows=10&username=${username}`;
+  const data = await fetch(url)
+  const dataJson = await data.json();
+  //console.log('geoCall: ', data);
+  console.log('geoJson: ', dataJson);
+}
+
+geoCall('colorado springs colorado usa')

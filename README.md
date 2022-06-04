@@ -21,6 +21,14 @@ https://www.meaningcloud.com/developer/login
 
 `MEANING_CLOUD_API_KEY=**************************`
 
+you will need to add the geo names username for the api call. you will also have to enable the call ability on your geo names account to allow api calls to work.
+
+create the geo names account: http://www.geonames.org/export/web-services.html
+
+enable the call ability: https://www.geonames.org/enablefreewebservice
+
+`GEO_NAMES_USERNAME=****************************`
+
 ## Starting the Server
 
 The server can be started by running the start command
