@@ -7,7 +7,7 @@
     "start": "node src/server/index.js --open",
     "build-prod": "webpack --config webpack.prod.js",
     "build-dev": "webpack-dev-server  --config webpack.dev.js --open",
-    "bStart": "rm -rf dist && webpack --config webpack.prod.js && node src/server/index.js",
+    "bStart": "webpack --config webpack.prod.js && node src/server/index.js --open",
     "preUndist": "echo \"some pre text echo\"",
     "Undist": "rm -rf dist && echo \"some text echo\"",
     "postUndist": "echo \"some post text echo\""
