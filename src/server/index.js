@@ -113,6 +113,7 @@ app.post('/sentiment', function(request, response) {
     console.log('end sentiment');
 })
 
+/*
 async function geoCall(text) {
   const search = encodeURIComponent(text);
   const username = process.env.GEO_NAMES_USERNAME
@@ -121,6 +122,135 @@ async function geoCall(text) {
   const dataJson = await data.json();
   //console.log('geoCall: ', data);
   console.log('geoJson: ', dataJson);
+};*/
+
+//geoCall('colorado springs colorado usa')
+
+// url creation for geo call query for lat and long details
+function urlGeoCall(text) {
+  const key = `&username=${process.env.GEO_NAMES_USERNAME}`;
+    // URL for initial API
+  const protocol = `http://`;
+  const host = `api.geonames.org/searchJSON`;
+  const api = `${protocol}${host}?`;
+    // OPTIONS for API call
+  const query = `q=${encodeURIComponent(text)}`;
+  const rows = `&maxRows=1`;
+  const options = `${query}${rows}`
+    // Final API URL
+  const url = `${api}${options}${key}`
+  return url
 }
 
-geoCall('colorado springs colorado usa')
+
+/*
+async function weathCurrent(lat, lon) {
+  //const key = process.env.WEATHER_BIT_API_KEY;
+  const h = `https://`;
+  const api = `api.weatherbit.io/v2.0/current?`;
+  const k = `&key=${process.env.WEATHER_BIT_API_KEY}`;
+  const u = `&units=I`;
+  const pos = `lat=${lat}&lon=${lon}`;
+  //const url = `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&units=I&key=${key}`
+  const url = `${h}${api}${pos}${u}${k}`
+  const data = await fetch(url);
+  const dataJson = await data.json();
+  console.log('weath Current: ', dataJson);
+};*/
+
+// New York lat lon lat=35.7796&lon=-78.6382
+//weathCurrent(35.7796, -78.6382);
+
+/*
+function urlWeathCur(lat, lon) {
+  const h = `https://`;
+  const api = `api.weatherbit.io/v2.0/current?`;
+  const k = `&key=${process.env.WEATHER_BIT_API_KEY}`;
+  const u = `&units=I`;
+  const pos = `lat=${lat}&lon=${lon}`;
+  const url = `${h}${api}${pos}${u}${k}`
+  return url
+}*/
+
+// url creation for weatherbit current day weather
+function urlWeathCur(lat, lon) {
+  const key = `&key=${process.env.WEATHER_BIT_API_KEY}`;
+    // URL for initial API
+  const protocol = `https://`;
+  const host = `api.weatherbit.io/v2.0/current`;
+  const api = `${protocol}${host}?`;
+    // OPTIONS for API call
+  const units = `&units=I`;
+  const position = `lat=${lat}&lon=${lon}`;
+  const options = `${position}${units}`
+    // Final API URL
+  const url = `${api}${options}${key}`
+  return url
+}
+
+/*
+const testUrl = urlWeathCur(35.7796, -78.6382);
+console.log('testUrl: ', testUrl);*/
+
+// url creation for weatherbit 1-16 day forcast
+function urlWeathForcast(lat, lon, length = 1) {
+  const key = `&key=${process.env.WEATHER_BIT_API_KEY}`;
+    // URL for initial API
+  const protocol = `https://`;
+  const host = `api.weatherbit.io/v2.0/forecast/daily`;
+  const api = `${protocol}${host}?`;
+    // OPTIONS for API call
+  const units = `&units=I`;
+  const position = `lat=${lat}&lon=${lon}`;
+  const days = `&days=${intRange(length,1,16)}`;
+  const options = `${position}${units}${days}`;
+    // Final API URL
+  const url = `${api}${options}${key}`;
+  return url;
+  //https://api.weatherbit.io/v2.0/forecast/daily?lat=35.7796&lon=-78.6382&units=I&days=1&key=ddff9affd7fe42e7b2c15f2e5c533ab6
+}
+
+// check if value is an intiger and within range of values as intiger.
+function intRange(value, min=0, max=100) {
+  value = parseInt(value);
+  min = parseInt(min);
+  max = parseInt(max);
+  if ( isNaN(max)) {
+    max = 100;
+  }
+  if ( isNaN(min)) {
+    min = 0;
+  }
+  if ( isNaN(value)) {
+    value = min;
+  }else if (value < min) {
+    value = min;
+  }else if (max < value) {
+    value = max;
+  }
+  return value;
+};
+
+// fetch with assumed json data recieved.
+async function jsonFetch(url) {
+  const data = await fetch(url);
+  const dataJson = await data.json();
+  return dataJson
+}
+
+/*
+jsonFetch(urlWeathCur(35.7796, -78.6382))
+  .then(jsonData => console.log('then json: ', jsonData))
+  .catch(e => console.log('errJFetch1: ', e))*/
+
+/*
+  jsonFetch(urlWeathForcast(35.7796, -78.6382, 2))
+    .then(jsonData => console.log('forcast json: ', jsonData))
+    .catch(e => console.log('errJFetch1: ', e))*/
+
+jsonFetch(urlGeoCall('chipita park colorado usa'))
+  .then(jsonData => console.log('geo data: ', jsonData))
+  .catch(e => console.log('errGeoCall2', e))
+
+
+//function urlPixabay()

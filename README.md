@@ -29,6 +29,22 @@ enable the call ability: https://www.geonames.org/enablefreewebservice
 
 `GEO_NAMES_USERNAME=****************************`
 
+
+add the KEY for the weatherbit api's'. this covers the current and 16 day forecast
+which is part of the free version of the api.
+
+create your account at: https://www.weatherbit.io/account/create
+
+`WEATHER_BIT_API_KEY=***************************`
+
+
+The Pixabay api key will be needed as well. this will provide the photos of the
+travel locations.
+
+create your account at: https://pixabay.com/api/docs/
+
+`PIXABAY_API_KEY=*******************************`
+
 ## Starting the Server
 
 The server can be started by running the start command
