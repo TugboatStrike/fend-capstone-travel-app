@@ -7,6 +7,8 @@ const cors = require('cors');
 
 const fetch = require('node-fetch'); // required for fetch
 
+const fs = require('fs');
+
 
 dotenv.config(); // allowing the .env file to be called by dotenv module.
 
@@ -247,10 +249,43 @@ jsonFetch(urlWeathCur(35.7796, -78.6382))
   jsonFetch(urlWeathForcast(35.7796, -78.6382, 2))
     .then(jsonData => console.log('forcast json: ', jsonData))
     .catch(e => console.log('errJFetch1: ', e))*/
-
+/*
 jsonFetch(urlGeoCall('chipita park colorado usa'))
   .then(jsonData => console.log('geo data: ', jsonData))
-  .catch(e => console.log('errGeoCall2', e))
+  .catch(e => console.log('errGeoCall2', e))*/
 
 
-//function urlPixabay()
+function urlPixabay(search) {
+  const key = `&key=${process.env.PIXABAY_API_KEY}`;
+    // URL for initial API
+  const protocol = `https://`;
+  const host = `pixabay.com/api/`;
+  const api = `${protocol}${host}?`;
+    // OPTIONS for API call
+  const query = `q=${encodeURIComponent(search)}`;
+  const imgType = `&image_type=photo`; // all, photo, illustration, vector, Def: all
+  const orin = `&orientation=horizontal` // all, horizontal, vertical, Def: all
+  const cat = `&category=buildings`;
+              // Accepted values: backgrounds, fashion, nature, science,
+              // education, feelings, health, people, religion,
+              // places, animals, industry, computer, food,
+              // sports, transportation, travel, buildings,
+              // business, music
+  //const wid = `&min_width=100`; // Default: 0
+  //const high = `&min_height=100` // Default: 0
+  const safe = `&safesearch=true`; // safe for all ages
+  const per = `&per_page=${intRange(4, 3, 200)}`; // results/page (3 - 200) Def: 20
+  const options = `${query}${imgType}${orin}${cat}${safe}${per}`
+    // Final API URL
+  const url = `${api}${options}${key}`
+  return url
+}
+
+console.log('pix url: ', urlPixabay('Denver colorado skyline'));
+
+jsonFetch(urlPixabay('chipita park colorado'))
+  .then(jsonData => {
+    console.log('Pix Data: ', jsonData)
+
+  })
+  .catch(e => console.log('errPix1', e))
