@@ -1,0 +1,100 @@
+
+div{
+  border: 1px solid blue;
+}
+
+.cardContent{
+  grid-area: cn;
+  display: flex;
+  flex-direction: column;
+}
+
+/*pulled from this website and modified for my own use.
+https://codepen.io/HenrikFricke/pen/GRNYrXK */
+
+:root {
+  --font-family-primary: "Vollkorn", serif;
+  --font-family-secondary: "PT Sans", sans-serif;
+  --font-size-title: 16px;
+  --line-height-title: 1.4;
+  --font-size-caption: 14px;
+  --line-height-caption: 1.2;
+  --color-text: #222022;
+  --color-highlight-primary: #FFEF7E;
+  --color-highlight-secondary: #B7F9E9;
+  --border-radius-primary: 16px;
+  --border-radius-secondary: 30px;
+}
+
+
+* {
+  -webkit-font-smoothing: antialiased;
+  -moz-osx-font-smoothing: grayscale;
+}
+
+
+.card {
+  max-width: 960px;
+  border-radius: var(--border-radius-primary);
+  box-shadow: 10px 10px 10px rgba(0, 0, 0, 0.5);
+  padding: 20px 20px 20px 20px;
+  box-sizing: border-box;
+  margin: 20px;
+  display: grid;
+  grid-template-columns: repeat(4, 35px) 1fr;
+  grid-template-rows: 35px 35px;
+  grid-template-areas:
+  "im im . cn cn cn"
+  "im im . cn cn cn";
+  border: 1px solid red;
+}
+
+
+.card__image {
+  width: 100%;
+  height: 100%;
+  max-height: 70px;
+  max-width: 70px;
+  border-radius: var(--border-radius-secondary);
+  -o-object-fit: cover;
+     object-fit: cover;
+  margin-bottom: 0px;
+  grid-area: im;
+  border: 1px solid red;
+}
+
+
+.card__content {
+  border: 1px solid purple;
+  grid-area: cn;
+  max-height: 100px;
+}
+
+
+.card__date {
+  display: block;
+  font-family: var(--font-family-secondary);
+  font-size: var(--font-size-caption);
+  line-height: var(--line-height-caption);
+  text-transform: uppercase;
+  color: var(--color-text);
+  margin-bottom: 6px;
+  border: 1px solid blue;
+}
+
+
+.card__title {
+  font-family: var(--font-family-primary);
+  font-size: var(--font-size-title);
+  line-height: var(--line-height-title);
+  color: var(--color-text);
+  -webkit-box-decoration-break: clone;
+          box-decoration-break: clone;
+  background-image: linear-gradient(180deg, var(--color-highlight-primary), var(--color-highlight-secondary));
+  background-size: 100% 30%;
+  background-repeat: no-repeat;
+  background-position: 0 85%;
+  padding: 0 4px;
+  margin-left: -4px;
+  border: 1px solid green;
+}

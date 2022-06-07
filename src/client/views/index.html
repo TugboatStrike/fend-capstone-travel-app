@@ -2,6 +2,11 @@
 <html lang="en" dir="ltr">
     <head>
         <meta charset="utf-8">
+        <meta
+          content="width=device-width, initial-scale=1, maximum-scale=1"
+          name="viewport"
+         /> <!-- This is required for the media queries to work on the mobile
+         devices.  -->
         <title>Test</title>
     </head>
 
@@ -21,6 +26,7 @@
                 <form class="" onsubmit="return Client.handleSubmit(event)">
                     <input id="name" type="text" name="input" value="" placeholder="Enter text for Sentiment check!">
                     <!-- <input id="name" type="text" name="input" value="" onblur="onBlur()" placeholder="Name"> -->
+                    <input id="date" type="date" name="date" value="">
                     <input type="submit" name="" value="submit" onclick="return Client.handleSubmit(event)" onsubmit="return Client.handleSubmit(event)">
                 </form>
             </section>
@@ -28,6 +34,17 @@
             <section>
                 <strong>Form Results:</strong>
                 <div id="results"></div>
+            </section>
+            <section>
+              <div class="cardContent">
+                <a href="#" class="card">
+                  <img src="https://placebear.com/200/300" class="card__image" alt="brown couch" />
+                  <div class="card__content">
+                    <time datetime="2021-03-30" class="card__date">30 march 2021</time>
+                    <span class="card__title">Card title text?</span>
+                  </div>
+                </a>
+              </div>
             </section>
         </main>
 
