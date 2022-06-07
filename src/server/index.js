@@ -283,9 +283,119 @@ function urlPixabay(search) {
 
 console.log('pix url: ', urlPixabay('Denver colorado skyline'));
 
-jsonFetch(urlPixabay('chipita park colorado'))
+
+jsonFetch(urlPixabay('denver colorado skyline'))
   .then(jsonData => {
-    console.log('Pix Data: ', jsonData)
+    //console.log('Pix Data: ', jsonData)
+    console.log('webImgUrl: ', jsonData.hits[0].webformatURL);
+    console.log('webImgID: ', jsonData.hits[0].id);
+    console.log('Hit Total: ', jsonData.total);
+    fetch(jsonData.hits[0].webformatURL)
+      .then(imgData => {
+        //console.log('imagFetchData: ', imgData)
+        //console.log('msgFetchBody: ', imgData.body);
+        console.log('Data Readable: ', imgData.body.readable);
+        console.log('Data size in bytes: ', imgData.body.readableLength);
+        /*
+        let count2 = 0;
+        let dataSize = 0;
+        imgData.body.on("readable", function() {
+          // There is some data to read now.
+          let data;
+          let count = 0;
+          count2 +=1;
+
+          console.log('data is readable, count: ', count2)
+
+          //while ((data = this.read()) !== null) {
+          while ((data = imgData.body.read()) !== null) {
+            //console.log('data len: ', data.readableLength);
+            count += 1;
+            dataSize += data.length;
+            console.log(`data ${count}: `, data.length);
+            console.log('file size: ', dataSize);
+          }
+        });*/
+        const fileStream = fs.createWriteStream('./src/server/fsTest/tImage3.jpg')
+        fileStream.on("pipe", pipingSts => { // create event to be triggered
+          console.log('Pipe healthy ', pipingSts)
+        });
+        console.log('before pipe event trigger');
+        imgData.body.pipe(fileStream); // this triggers the pipe event.
+        // set timeout for Pipe
+
+        setTimeout(() => {
+          console.log('Stop writing to file.txt.');
+          imgData.body.unpipe(fileStream);
+          console.log('Manually close the file stream.');
+          fileStream.end();
+        }, 2);
+        /* Example
+        const fs = require('node:fs');
+        const readable = getReadableStreamSomehow();
+        const writable = fs.createWriteStream('file.txt');
+        // All the data from readable goes into 'file.txt',
+        // but only for the first second.
+        readable.pipe(writable);
+        setTimeout(() => {
+          console.log('Stop writing to file.txt.');
+          readable.unpipe(writable);
+          console.log('Manually close the file stream.');
+          writable.end();
+        }, 1000);
+        */
+
+        fileStream.on("error", streamErr => {
+          console.log('Stream creation error?', streamErr)
+          }
+        );
+        fileStream.on("finish", resolveTest => {
+          console.log('Stream completed! ', resolveTest)
+          }
+        );
+        //imgData.body.on("pipe", imgPipBefore => console.log('imgPipBefore ', imgPipBefore));
+        //imgData.body.pipe(fileStream);
+        //fileStream.on("pipe", pipingSts2 => console.log('piping after? ', pipingSts2));
+        //imgData.body.on("pipe", imgPipAfter => console.log('imgPipAfter ', imgPipAfter));
+        //imgData.body.on("error", console.log('pipe error?'));
+
+        imgData.body.on("error", rejectTest => console.log('error on load?', rejectTest));
+        //fileStream.on("finish", console.log('file save success?'));
+        //fileStream.on("finish", resolveTest => console.log('finished success?', resolveTest));
+        //fileStream.on("error", reject2Test => console.log('file save error?', reject2Test));
+          /*.then(finFileSave => {
+            console.log('file save was success!');
+          }).catch(e => console.log('errFileSave4: ',e))*/
+          /*
+        const sendFile = await ((resolveDiff, rejectDiff) => {
+          imgData.body.pipe(fileStream);
+          imgData.body.on("error", rejectDiff);
+          fileStream.on("finish", resolveDiff)
+          console.log("rej: ", rejectDiff);
+          console.log("fin: ", resolveDiff);
+        })*/
+      }).catch(e => console.log('errImgD1: ', e))
 
   })
   .catch(e => console.log('errPix1', e))
+
+async function tempFs(file) {
+  const theFile = await fs.readFile(file, function(err, data){
+    if (err) {
+      console.log('errFileRead: ', err);
+    }else {
+      // success print content
+      console.log('fileData: ', data);
+    }
+  });
+  fs.writeFile('./src/server/fsTest/secondTemp.txt', "Hello world", function(err){
+    if (err) {
+      console.log('errFileWrite: ', err);
+    }else {
+      // success print content
+      console.log('file created!');
+    }
+  })
+}
+
+//tempFs('./src/server/fsTest/temp.txt')
