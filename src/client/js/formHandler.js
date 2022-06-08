@@ -1,10 +1,24 @@
+//const formDateValue = document.querySelector('#date');
+//formDateValue.value = dateCurrent();
+
+document.querySelector('#date').value = dateCurrent();
+
+
+
 function handleSubmit(event) {
     event.preventDefault()
 
     // check what text was put into the form field
     let formText = document.getElementById('name').value
+
+    let formDate = document.getElementById('date').value
+    console.log('date: ', formDate);
+    console.log('today date: ', dateCurrent());
+    console.log('date Range: ', dateRange(formDate));
     //console.log('formText: ', formText);
     Client.checkForName(formText)
+
+    addCard('https://placebear.com/200/300', formDate, 'creation');
 
 
 
@@ -19,14 +33,14 @@ function handleSubmit(event) {
         // checking for scored value
         const scoreDefined = (anotherRes.score_tag === 'NONE');
         if (code) {
-          alert(`err code: ${anotherRes.status.code}
-${anotherRes.status.msg}`);
+          //alert(`err code: ${anotherRes.status.code}
+//${anotherRes.status.msg}`);
         //  };
 
         }else if (defined) {
-          alert('Please enter a different value')
+          //alert('Please enter a different value')
         }else if (scoreDefined) {
-          alert('Entered Value could not be scored')
+          //alert('Entered Value could not be scored')
         };
         /*}else {
           updateResults(anotherRes, formText);
@@ -130,6 +144,17 @@ let d = new Date();
 let newDate = (d.getMonth()+1) +'.'+ d.getDate()+'.'+ d.getFullYear();
 console.log('newDate: ', newDate);
 
+function dateRange(dateData) {
+  console.log('date range: ');
+}
+
+function dateCurrent() {
+  const d = new Date();
+  //const todayDate = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
+  const todayDate = `${d.getFullYear()}-06-07`;
+  return todayDate;
+}
+
 /*
 addCard('https://placebear.com/200/300', newDate, 'some text different');
 addCard('https://placebear.com/200/300', newDate, 'card 2');
@@ -147,3 +172,17 @@ console.log('card list: ', cardList);
 const cardList2 = document.querySelectorAll('.card');
 console.log('card list2: ', cardList2);
 */
+
+
+
+function addZero(numStr, len=2) {
+  while (numStr.length< len) {
+    numStr = '0'+numStr
+  }
+  return numStr
+}
+
+let stringTest = '1'
+console.log('initial string: ', stringTest);
+stringTest = addZero(stringTest);
+console.log('after string: ', stringTest);
