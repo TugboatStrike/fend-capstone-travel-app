@@ -8,11 +8,15 @@ document.querySelector('#date').value = dateDashCur();
 
 function handleSubmit(event) {
     event.preventDefault()
+    const formInfo = {};
 
     // check what text was put into the form field
     const formText = document.getElementById('name').value
 
     const formDate = document.getElementById('date').value
+
+    formInfo['formText'] = formText;
+    formInfo['formDate'] = formDate
     //const dateObj = new Date(formDate.replace(/-/g, '\/'));
     const dateObj = getDate(formDate);
     /*
@@ -24,13 +28,14 @@ function handleSubmit(event) {
     const strDate = dateLong(dateObj);
     const jsonDate = dateObj.toJSON();
 
+    console.log('created form info: ', formInfo);
+    getForcast(formInfo);
+    //const todayTest = new Date();
 
-    const todayTest = new Date();
-
-    console.log('date Range: ', dateRange(formDate, 0, 15));
-    console.log('api forcast: ', dateRange(formDate, 0, 15)+1);
-    console.log('string date: ', strDate);
-    console.log('json date: ', jsonDate);
+    //console.log('date Range: ', dateRange(formDate, 0, 15));
+    //console.log('api forcast: ', dateRange(formDate, 0, 15)+1);
+    //console.log('string date: ', strDate);
+    //console.log('json date: ', jsonDate);
 
     //console.log('formText: ', formText);
     Client.checkForName(formText)
@@ -38,7 +43,7 @@ function handleSubmit(event) {
     addCard('https://placebear.com/200/300', strDate, 'creation');
 
 
-
+/*
     getSentiment(createJson(formText))
       .then(anotherRes => {
         // updateResults(anotherRes, formText);
@@ -59,13 +64,14 @@ function handleSubmit(event) {
         }else if (scoreDefined) {
           //alert('Entered Value could not be scored')
         };
-        /*}else {
-          updateResults(anotherRes, formText);
-        };
-        */
+        //}else {
+        //  updateResults(anotherRes, formText);
+        //};
+
 
         return anotherRes;
       }).catch(e => console.log('errResult1', e))
+      */
 
     console.log("::: Form Submitted :::")
     fetch('http://localhost:8080/test')
@@ -105,6 +111,41 @@ async function getSentiment( data){
     //console.log('json res from server: ', jsonResponse);
     return jsonResponse;
 }
+
+// creating server API
+// 0) determine message options to be used
+// 1) create server call with simple log to be triggered
+// 1.1) create function to be called by api message
+// 2) create client call to api to trigger api call only for log check
+// 3) client side add body with empty message
+// 4) server side make sure api still triggers
+// 5) server side display the message
+// 6) client side add something to empty message
+// 6.1) note this required body: JSON.stringify(<json object>)
+// 7) server log message when recieved
+// 7.1) note this just needs request.body to display message
+// 7.2) server does require app.use(bodyParser.json()); as middleware
+// 7.3) bodyParser.json allows server to read message. doesn't effect api call
+// 8) server side create response and send back to Client
+// 9) client side recieve response
+// 10) client side convert to readable formate like json
+// 11) client side display message response data
+async function getForcast(jsonData = {}) {
+  console.log('getting forcast');
+  const options = {method: 'POST',// *GET, POST, PUT, DELETE, etc.
+                    credentials: 'same-origin',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(jsonData)
+                    //body: jsonData
+                  }
+  const response = await fetch('/forcast', options)
+  const jsonRes = await response.json();
+  console.log('forcast fetch done!!!', jsonRes);
+}
+
+//getForcast()
 
 
 function updateResults(jsonData, textRes) {

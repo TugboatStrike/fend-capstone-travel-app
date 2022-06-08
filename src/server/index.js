@@ -18,12 +18,13 @@ const app = express()
 /**** Middleware ****/
 
 // !!!!This needs better explination on usage!!!!!!
+// i think this allows the server side to not need JSON.stringify() ?
 // Here we are configuring express to use body-parser as middle-ware.
 //app.use(bodyParser.urlencoded({ extended: false }));
 app.use(bodyParser.json());
 
 // Cors for cross origin allowance
-app.use(cors());
+//app.use(cors());
 
 
 app.use(express.static('dist'))
@@ -294,3 +295,11 @@ jsonFetch(urlPixabay('denver colorado skyline'))
     console.log('webImgID: ', jsonData.hits[0].id);
     console.log('Hit Total: ', jsonData.total);
   }).catch(e => console.log('errPix1', e))*/
+
+
+app.post('/forcast', dateForcast)
+
+async function dateForcast(request, response) {
+  console.log('request weather forcast: ', request.body);
+  response.send({response: 'it worked?'})
+}
