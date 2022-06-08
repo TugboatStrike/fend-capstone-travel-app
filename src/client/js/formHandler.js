@@ -1,7 +1,8 @@
-//const formDateValue = document.querySelector('#date');
-//formDateValue.value = dateCurrent();
 
+// update date value to start with current date as default.
 document.querySelector('#date').value = dateCurrent();
+
+
 
 
 
@@ -9,12 +10,21 @@ function handleSubmit(event) {
     event.preventDefault()
 
     // check what text was put into the form field
-    let formText = document.getElementById('name').value
+    const formText = document.getElementById('name').value
 
-    let formDate = document.getElementById('date').value
+    const formDate = document.getElementById('date').value
+
+    const oneDay = 1000 * 60 * 60 * 24;
+
+    const dateInfo = new Date(formDate);
+    const todayDate = new Date(dateCurrent());
+    let dateDiff = (dateInfo - todayDate)/oneDay;
     console.log('date: ', formDate);
-    console.log('today date: ', dateCurrent());
-    console.log('date Range: ', dateRange(formDate));
+    //console.log('today date: ', dateCurrent());
+    //console.log('date Range: ', dateRange(formDate));
+    console.log('convert date entry: ', dateInfo, ' time: ', dateInfo.getTime());
+    console.log('today date entry: ', todayDate, ' time: ', todayDate.getTime());
+    console.log('days diff: ', dateDiff);
     //console.log('formText: ', formText);
     Client.checkForName(formText)
 
@@ -150,10 +160,22 @@ function dateRange(dateData) {
 
 function dateCurrent() {
   const d = new Date();
-  //const todayDate = `${d.getFullYear()}-${d.getMonth()+1}-${d.getDate()}`;
-  const todayDate = `${d.getFullYear()}-06-07`;
-  return todayDate;
+  const year = addZero(d.getFullYear(),4);
+  const month = addZero((d.getMonth()+1));
+  const day = addZero(d.getDate());
+  //const todayDate = `${year}-${month}-${day}`;
+  //return todayDate;
+  return `${year}-${month}-${day}`;
 }
+
+// adds zero's to the string until the expected length is reached.
+function addZero(numStr, len=2) {
+  numStr = numStr.toString(); // consvert to string
+  while (numStr.length < len) {
+    numStr = '0' + numStr;
+  }
+  return numStr
+};
 
 /*
 addCard('https://placebear.com/200/300', newDate, 'some text different');
@@ -172,17 +194,3 @@ console.log('card list: ', cardList);
 const cardList2 = document.querySelectorAll('.card');
 console.log('card list2: ', cardList2);
 */
-
-
-
-function addZero(numStr, len=2) {
-  while (numStr.length< len) {
-    numStr = '0'+numStr
-  }
-  return numStr
-}
-
-let stringTest = '1'
-console.log('initial string: ', stringTest);
-stringTest = addZero(stringTest);
-console.log('after string: ', stringTest);
