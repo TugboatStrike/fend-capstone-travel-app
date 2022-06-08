@@ -116,7 +116,7 @@ function updateResults(jsonData, textRes) {
   document.getElementById('results').innerHTML = resaultMsg;
 }
 
-// checks if the url starts with http to consider it a valid url
+// checks if text is a url starting with http. bool reply
 function isUrl(text) {
   const regex = /http/;
   const result = regex.test(text);
