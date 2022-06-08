@@ -13,16 +13,26 @@ function handleSubmit(event) {
     const formText = document.getElementById('name').value
 
     const formDate = document.getElementById('date').value
+    const dateObj = new Date(formDate.replace(/-/g, '\/'));
+    const strDate = dateObj.toLocaleString('en-US', { year: 'numeric',
+                                                        month: 'long',
+                                                        day: 'numeric',
+                                                        weekday: 'long'
+                                                      });
+    const jsonDate = dateObj.toJSON();
 
 
-
+    const todayTest = new Date();
 
     console.log('date Range: ', dateRange(formDate, 0, 15));
+    console.log('api forcast: ', dateRange(formDate, 0, 15)+1);
+    console.log('string date: ', strDate);
+    console.log('json date: ', jsonDate);
 
     //console.log('formText: ', formText);
     Client.checkForName(formText)
 
-    addCard('https://placebear.com/200/300', formDate, 'creation');
+    addCard('https://placebear.com/200/300', strDate, 'creation');
 
 
 
@@ -129,13 +139,13 @@ function addCard(picUrl = 'https://placebear.com/200/300', date, text = '') {
 }
 
 
-function genCard(picUrl2 = 'https://placebear.com/200/300', date2, text2 = '') {
+function genCard(picUrl = 'https://placebear.com/200/300', date, text = '') {
   let cardGen = document.createElement('div')
   cardGen.innerHTML = `<a href="#" class="card">
-    <img src=${picUrl2} class="card__image" alt="brown couch" />
+    <img src=${picUrl} class="card__image" alt="brown couch" />
     <div class="card__content">
-      <time datetime="2021-03-30" class="card__date">${date2}</time>
-      <span class="card__title">${text2}</span>
+      <time datetime="2021-03-30" class="card__date">${date}</time>
+      <span class="card__title">${text}</span>
     </div>
   </a>`;
   return cardGen.firstChild
@@ -170,6 +180,34 @@ function dateRange(dateData, min, max) {
   //console.log('today date: ', dateDashCur());
   return dateDiff;
 }
+
+// takes date as string and converts to date object
+// if string is valid date it will return the string date else it returns
+// current date if invalid string.
+function getDate(strDate) {
+  let iniTest = new Date(strDate.replace(/-/g, '\/'));
+  let dateObj = new Date();
+  //console.log('given string: ', strDate);
+  if (iniTest.toString() !== "Invalid Date" && !isNaN(iniTest)) {
+    dateObj = iniTest;
+    //console.log('date string good: ', dateObj);
+  }
+  return dateObj;
+}
+
+console.log('test 1: ', getDate('stringTest'));
+console.log('test 2: ', getDate('05/11/2022'));
+console.log('test 3: ', getDate('05-11-2022'));
+//console.log('test 0: ', Object.prototype.toString.call(new Date('aString')));
+//console.log('test 0.1: ', Object.prototype.toString.call(new Date('aString'))==="[object Date]");
+//const testDateObj = new Date('aString')
+//console.log('test 0.2: ', testDateObj.toString());
+//console.log('test 0.2: ', testDateObj.toString()!== "Invalid Date");
+//console.log('test 1: ', (new Date('aString').toString() !== "Invalid Date"));
+//console.log('test 2: ', (new Date('5-11-2022').toString() !== "Invalid Date"));
+//console.log('test 3: ', (new Date('5/11/2022').toString() !== "Invalid Date"));
+//console.log('test 4: ', !isNaN(testDateObj));
+//console.log('test 5: ', !isNaN(new Date('5-11-2022')));
 
 function dateDashCur() {
   const d = new Date();
