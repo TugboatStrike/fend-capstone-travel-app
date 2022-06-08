@@ -13,12 +13,15 @@ function handleSubmit(event) {
     const formText = document.getElementById('name').value
 
     const formDate = document.getElementById('date').value
-    const dateObj = new Date(formDate.replace(/-/g, '\/'));
+    //const dateObj = new Date(formDate.replace(/-/g, '\/'));
+    const dateObj = getDate(formDate);
+    /*
     const strDate = dateObj.toLocaleString('en-US', { year: 'numeric',
                                                         month: 'long',
                                                         day: 'numeric',
                                                         weekday: 'long'
-                                                      });
+                                                      });*/
+    const strDate = dateLong(dateObj);
     const jsonDate = dateObj.toJSON();
 
 
@@ -171,6 +174,17 @@ function dateRange(dateData, min = 0, max = 100) {
   const dateDiff = (dateInfo - todayDate)/oneDay;
   const rangeDays = intRangeUp(dateDiff, 0, 15);
   return rangeDays;
+}
+
+function dateLong(dObj) {
+  const options = { year: 'numeric',
+                    month: 'long',
+                    day: 'numeric',
+                    weekday: 'long'
+                  };
+  const lang = 'en-US';
+
+  return dObj.toLocaleString(lang, options);
 }
 
 
