@@ -10,7 +10,7 @@ function handleSubmit(event) {
 
     getSentiment(createJson(formText))
       .then(anotherRes => {
-        updateResults(anotherRes, formText);
+        // updateResults(anotherRes, formText);
         console.log('anotherRes: ', anotherRes);
         // checking code status
         const code = (anotherRes.status.code != 0);
@@ -130,11 +130,13 @@ let d = new Date();
 let newDate = (d.getMonth()+1) +'.'+ d.getDate()+'.'+ d.getFullYear();
 console.log('newDate: ', newDate);
 
+/*
 addCard('https://placebear.com/200/300', newDate, 'some text different');
 addCard('https://placebear.com/200/300', newDate, 'card 2');
 addCard('https://placebear.com/200/300', newDate, 'card 3');
 addCard('https://placebear.com/200/300', newDate, 'card 4');
 addCard('https://placebear.com/200/300', newDate, 'card 5');
+*/
 
 /*
 const cardList = document.querySelectorAll('.card');
