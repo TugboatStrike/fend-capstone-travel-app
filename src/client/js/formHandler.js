@@ -166,7 +166,7 @@ async function testServer(num = 1) {
   return jsonRes['num'];
 }
 
-console.log('testServer 3: ', testServer(3));
+//console.log('testServer 3: ', testServer(3));
 
 export { testServer }
 

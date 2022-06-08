@@ -11,10 +11,11 @@ describe("Testing the server functionality", () => {
         // The expect() function, in combination with a Jest matcher, is used to check if the function produces the expected output
         // The general syntax is `expect(myFunction(arg1, arg2, ...)).toEqual(expectedValue);`, where `toEqual()` is a matcher
         //expect(handleSubmit).toBeDefined();
-        const input = 5;
+        const input = 8;
         const output = input+1;
 
-        await expect(testServer(input)).toEqual(output);
+        //await expect(testServer(input)).toEqual(output);
         //return expect(testServer(input)).resolves.toBe(output)
+        expect(testServer(input)).resolves.toBe(output)
     })
 });
