@@ -14,7 +14,7 @@ describe("Testing the server functionality", () => {
         const input = 5;
         const output = input+1;
 
-        //await expect(testServer(input)).toEqual(output);
-        return expect(testServer(input)).resolves.toBe(`${output}`)
+        await expect(testServer(input)).toEqual(output);
+        //return expect(testServer(input)).resolves.toBe(output)
     })
 });

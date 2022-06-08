@@ -1,6 +1,6 @@
 
 // update date value to start with current date as default.
-document.querySelector('#date').value = dateDashCur();
+//document.querySelector('#date').value = dateDashCur();
 
 
 
@@ -309,6 +309,8 @@ function dateDashCur() {
   const day = addZero(d.getDate());
   return `${year}-${month}-${day}`;
 }
+
+export { dateDashCur }
 
 // adds zero's to the string until the expected length is reached.
 function addZero(numStr, len=2) {

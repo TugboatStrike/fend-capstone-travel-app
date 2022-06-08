@@ -1,6 +1,7 @@
 import { checkForName } from './js/nameChecker'
 import { handleSubmit } from './js/formHandler'
 import { testServer } from './js/formHandler'
+import { dateDashCur } from './js/formHandler'
 
 import './styles/resets.scss';
 import './styles/base.scss';
@@ -26,3 +27,7 @@ export {
 //alert("I EXIST")
 //console.log("CHANGE!!");
 //console.log("what it works!!");
+
+
+// update date value to start with current date as default.
+document.querySelector('#date').value = dateDashCur();
