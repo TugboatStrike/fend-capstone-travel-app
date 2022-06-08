@@ -97,44 +97,30 @@ function isUrl(text) {
 }
 
 
-async function addCard(picUrl = 'https://placebear.com/200/300', date, text = '') {
-  const cardList = await document.querySelectorAll('card');
-  console.log('cardList: ', cardList);
-  const cardB = await document.getElementById("cardBox");
-
-  console.log('card box: ', cardB);
-  const card = await genCard(picUrl, date, text);
-  //const card = await genCard(picUrl, newDate, 'some text different');
-
-  console.log('card to add: ', card);
-
+function addCard(picUrl = 'https://placebear.com/200/300', date, text = '') {
+  const cardList = document.querySelectorAll('.card');
+  const cardB = document.getElementById("cardBox");
+  const card = genCard(picUrl, date, text);
+  // Check for card limit and remove oldest fifo
   if (cardList.length >= 3) {
-    cardlist[0].remove();
+    cardList[0].remove();
     cardB.appendChild(card);
   }else {
     cardB.appendChild(card);
   }
-
 }
 
 
-
-async function genCard(picUrl2 = 'https://placebear.com/200/300', date2, text2 = '') {
-  //const cardB = await document.getElementById("cardBox");
-  let cardGen = await document.createElement('div')
-  cardGen.innerHTML = await `<a href="#" class="card">
+function genCard(picUrl2 = 'https://placebear.com/200/300', date2, text2 = '') {
+  let cardGen = document.createElement('div')
+  cardGen.innerHTML = `<a href="#" class="card">
     <img src=${picUrl2} class="card__image" alt="brown couch" />
     <div class="card__content">
       <time datetime="2021-03-30" class="card__date">${date2}</time>
       <span class="card__title">${text2}</span>
     </div>
   </a>`;
-
-  const cardSend = await cardGen.firstChild;
-
-  //cardB.appendChild(card.firstChild);
-  console.log('card child: ', cardSend);
-  return cardSend;
+  return cardGen.firstChild
 }
 
 const today = `${Date()}`
@@ -144,10 +130,11 @@ let d = new Date();
 let newDate = (d.getMonth()+1) +'.'+ d.getDate()+'.'+ d.getFullYear();
 console.log('newDate: ', newDate);
 
-//genCard('https://placebear.com/200/300', newDate, 'some text different');
+addCard('https://placebear.com/200/300', newDate, 'some text different');
 addCard('https://placebear.com/200/300', newDate, 'card 2');
 addCard('https://placebear.com/200/300', newDate, 'card 3');
-//addCard('https://placebear.com/200/300', newDate, 'card 4');
+addCard('https://placebear.com/200/300', newDate, 'card 4');
+addCard('https://placebear.com/200/300', newDate, 'card 5');
 
 /*
 const cardList = document.querySelectorAll('.card');
