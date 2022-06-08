@@ -214,7 +214,7 @@ function urlWeathForcast(lat, lon, length = 1) {
 
 // check if value is an intiger and within range of values as intiger.
 function intRange(value, min=0, max=100) {
-  value = parseInt(value);
+
   min = parseInt(min);
   max = parseInt(max);
   if ( isNaN(max)) {
@@ -230,6 +230,8 @@ function intRange(value, min=0, max=100) {
   }else if (max < value) {
     value = max;
   }
+  // value is within range now truncate and convert to int
+  value = parseInt(value);
   return value;
 };
 

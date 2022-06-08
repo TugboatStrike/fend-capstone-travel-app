@@ -116,15 +116,16 @@ function updateResults(jsonData, textRes) {
   document.getElementById('results').innerHTML = resaultMsg;
 }
 
-
+// checks if the url starts with http to consider it a valid url
 function isUrl(text) {
   const regex = /http/;
   const result = regex.test(text);
-  console.log("regex: ", result);
+  //console.log("regex: ", result);
   return result;
 }
 
-
+// uses the generated card function and adds the element to the dom
+// !!!!! this should be changed to except any element and add it to dom
 function addCard(picUrl = 'https://placebear.com/200/300', date, text = '') {
   const cardList = document.querySelectorAll('.card');
   const cardB = document.getElementById("cardBox");
@@ -138,7 +139,7 @@ function addCard(picUrl = 'https://placebear.com/200/300', date, text = '') {
   }
 }
 
-
+// generates card as element.
 function genCard(picUrl = 'https://placebear.com/200/300', date, text = '') {
   let cardGen = document.createElement('div')
   cardGen.innerHTML = `<a href="#" class="card">
@@ -151,71 +152,83 @@ function genCard(picUrl = 'https://placebear.com/200/300', date, text = '') {
   return cardGen.firstChild
 }
 
-const today = `${Date()}`
-console.log('today date: ', today);
 
-let d = new Date();
-let newDate = (d.getMonth()+1) +'.'+ d.getDate()+'.'+ d.getFullYear();
-console.log('newDate: ', newDate);
-
-function dateRange(dateData, min, max) {
+// checks date is within range of days. returns min / max or days from currnt
+function dateRange(dateData, min = 0, max = 100) {
   const oneDay = 1000 * 60 * 60 * 24;
+  min = parseInt(min);
+  max = parseInt(max);
+  if ( isNaN(max)) {
+    max = 100;
+  }
+  if ( isNaN(min)) {
+    min = 0;
+  }
   // Dashes and Slashes give diffrent results. by converting to just the day
   // date and then creating the date again the times will match up for diff
-  const dateInfo = new Date(dateData.replace(/-/g, '\/'));
-  const todayDate = new Date(dateDashCur().replace(/-/g, '\/'));
-  let dateDiff = (dateInfo - todayDate)/oneDay;
-
-  //console.log('convert date entry: ', dateInfo, ' time: ', dateInfo.getTime());
-  //console.log('today date entry: ', todayDate, ' time: ', todayDate.getTime());
-  //console.log('days diff: ', dateDiff);
-
-  //const dateInfo = new Date(formDate);
-
-
-  //const todayDate = new Date(dateDashCur());
-
-
-  //console.log('date: ', formDate);
-  //console.log('today date: ', dateDashCur());
-  return dateDiff;
+  const dateInfo = getDate(dateData);
+  const todayDate = getDate(dateDashCur());
+  const dateDiff = (dateInfo - todayDate)/oneDay;
+  const rangeDays = intRangeUp(dateDiff, 0, 15);
+  return rangeDays;
 }
+
+
+// check if value is an intiger and within range of values as intiger.
+// this also rounds any float numbers up instead of truncating them.
+// because date obj times can be off not all difference divisions
+// will be exact. P.S. can i find a bigger hammer?
+function intRangeUp(value, min=0, max=100) {
+  const initValue = value;
+  let notChanged = true;
+  min = parseInt(min);
+  max = parseInt(max);
+  if ( isNaN(max)) {
+    max = 100;
+  }
+  if ( isNaN(min)) {
+    min = 0;
+  }
+  if ( isNaN(value)) {
+    value = min
+    notChanged = false;
+  }else if (value < min) {
+    value = min;
+    notChanged = false;
+  }else if (max < value) {
+    value = max;
+    notChanged = false;
+  //}else if (initValue != value && value!==min && value!==max) {
+  }
+  value = parseInt(value); // truncating any floats
+  if (initValue != value && notChanged) {
+    // assume value to round up
+    value += 1;
+  }
+  return value;
+};
+
+
 
 // takes date as string and converts to date object
 // if string is valid date it will return the string date else it returns
 // current date if invalid string.
-function getDate(strDate) {
+function getDate(strDate = '') {
   let iniTest = new Date(strDate.replace(/-/g, '\/'));
   let dateObj = new Date();
-  //console.log('given string: ', strDate);
   if (iniTest.toString() !== "Invalid Date" && !isNaN(iniTest)) {
     dateObj = iniTest;
-    //console.log('date string good: ', dateObj);
   }
   return dateObj;
 }
 
-console.log('test 1: ', getDate('stringTest'));
-console.log('test 2: ', getDate('05/11/2022'));
-console.log('test 3: ', getDate('05-11-2022'));
-//console.log('test 0: ', Object.prototype.toString.call(new Date('aString')));
-//console.log('test 0.1: ', Object.prototype.toString.call(new Date('aString'))==="[object Date]");
-//const testDateObj = new Date('aString')
-//console.log('test 0.2: ', testDateObj.toString());
-//console.log('test 0.2: ', testDateObj.toString()!== "Invalid Date");
-//console.log('test 1: ', (new Date('aString').toString() !== "Invalid Date"));
-//console.log('test 2: ', (new Date('5-11-2022').toString() !== "Invalid Date"));
-//console.log('test 3: ', (new Date('5/11/2022').toString() !== "Invalid Date"));
-//console.log('test 4: ', !isNaN(testDateObj));
-//console.log('test 5: ', !isNaN(new Date('5-11-2022')));
 
+// Get current date in dash format used primarily for html input value
 function dateDashCur() {
-  const d = new Date();
+  const d = getDate();
   const year = addZero(d.getFullYear(),4);
   const month = addZero((d.getMonth()+1));
   const day = addZero(d.getDate());
-  //const todayDate = `${year}-${month}-${day}`;
-  //return todayDate;
   return `${year}-${month}-${day}`;
 }
 
