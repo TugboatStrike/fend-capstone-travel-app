@@ -84,6 +84,7 @@ function handleSubmit(event) {
 
 export { handleSubmit }
 
+
 // create a json object dictionary with data as the key word.
 function createJson(text) {
     const urlSts = isUrl(text);
@@ -151,20 +152,23 @@ async function getForcast(jsonData = {}) {
 
 async function testServer(num = 1) {
   console.log('Testing Server running');
+  const msgData = {num: num}
   const options = {method: 'POST',// *GET, POST, PUT, DELETE, etc.
                     credentials: 'same-origin',
                     headers: {
                       'Content-Type': 'application/json',
                     },
-                    //body: JSON.stringify(num)
+                    body: JSON.stringify(msgData)
                   }
   const response = await fetch('/test', options)
   const jsonRes = await response.json();
   console.log('server test done!!!', jsonRes);
-  return jsonRes;
+  return jsonRes['num'];
 }
 
-testServer();
+console.log('testServer 3: ', testServer(3));
+
+export { testServer }
 
 
 function updateResults(jsonData, textRes) {

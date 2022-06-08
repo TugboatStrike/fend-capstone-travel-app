@@ -308,5 +308,9 @@ async function dateForcast(request, response) {
 app.post('/test', testServer);
 
 async function testServer(request, response) {
-  console.log('initial test setup');
+  console.log('initial test setup', request.body);
+  const msgData = request.body;
+  msgData['num'] += 1;
+  console.log('msgData: ', msgData);
+  response.send(msgData);
 }
