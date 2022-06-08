@@ -1,6 +1,6 @@
 
 // update date value to start with current date as default.
-document.querySelector('#date').value = dateCurrent();
+document.querySelector('#date').value = dateDashCur();
 
 
 
@@ -14,17 +14,11 @@ function handleSubmit(event) {
 
     const formDate = document.getElementById('date').value
 
-    const oneDay = 1000 * 60 * 60 * 24;
 
-    const dateInfo = new Date(formDate);
-    const todayDate = new Date(dateCurrent());
-    let dateDiff = (dateInfo - todayDate)/oneDay;
-    console.log('date: ', formDate);
-    //console.log('today date: ', dateCurrent());
-    //console.log('date Range: ', dateRange(formDate));
-    console.log('convert date entry: ', dateInfo, ' time: ', dateInfo.getTime());
-    console.log('today date entry: ', todayDate, ' time: ', todayDate.getTime());
-    console.log('days diff: ', dateDiff);
+
+
+    console.log('date Range: ', dateRange(formDate, 0, 15));
+
     //console.log('formText: ', formText);
     Client.checkForName(formText)
 
@@ -154,11 +148,30 @@ let d = new Date();
 let newDate = (d.getMonth()+1) +'.'+ d.getDate()+'.'+ d.getFullYear();
 console.log('newDate: ', newDate);
 
-function dateRange(dateData) {
-  console.log('date range: ');
+function dateRange(dateData, min, max) {
+  const oneDay = 1000 * 60 * 60 * 24;
+  // Dashes and Slashes give diffrent results. by converting to just the day
+  // date and then creating the date again the times will match up for diff
+  const dateInfo = new Date(dateData.replace(/-/g, '\/'));
+  const todayDate = new Date(dateDashCur().replace(/-/g, '\/'));
+  let dateDiff = (dateInfo - todayDate)/oneDay;
+
+  //console.log('convert date entry: ', dateInfo, ' time: ', dateInfo.getTime());
+  //console.log('today date entry: ', todayDate, ' time: ', todayDate.getTime());
+  //console.log('days diff: ', dateDiff);
+
+  //const dateInfo = new Date(formDate);
+
+
+  //const todayDate = new Date(dateDashCur());
+
+
+  //console.log('date: ', formDate);
+  //console.log('today date: ', dateDashCur());
+  return dateDiff;
 }
 
-function dateCurrent() {
+function dateDashCur() {
   const d = new Date();
   const year = addZero(d.getFullYear(),4);
   const month = addZero((d.getMonth()+1));
