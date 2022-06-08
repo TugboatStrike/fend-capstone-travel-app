@@ -303,3 +303,10 @@ async function dateForcast(request, response) {
   console.log('request weather forcast: ', request.body);
   response.send({response: 'it worked?'})
 }
+
+// jest testing api call
+app.post('/test', testServer);
+
+async function testServer(request, response) {
+  console.log('initial test setup');
+}

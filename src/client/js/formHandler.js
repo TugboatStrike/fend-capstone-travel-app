@@ -143,9 +143,28 @@ async function getForcast(jsonData = {}) {
   const response = await fetch('/forcast', options)
   const jsonRes = await response.json();
   console.log('forcast fetch done!!!', jsonRes);
+  return jsonRes;
 }
 
 //getForcast()
+
+
+async function testServer(num = 1) {
+  console.log('Testing Server running');
+  const options = {method: 'POST',// *GET, POST, PUT, DELETE, etc.
+                    credentials: 'same-origin',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    //body: JSON.stringify(num)
+                  }
+  const response = await fetch('/test', options)
+  const jsonRes = await response.json();
+  console.log('server test done!!!', jsonRes);
+  return jsonRes;
+}
+
+testServer();
 
 
 function updateResults(jsonData, textRes) {

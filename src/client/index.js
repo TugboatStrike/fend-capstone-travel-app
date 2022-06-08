@@ -13,8 +13,14 @@ export {
   handleSubmit
 }
 
-console.log(checkForName);
+// console.log(checkForName);
+/* this gave the following response... why do this?
+
+ƒ o(e){let t="";console.log("::: Running checkForName :::",e);return["Picard","Janeway","Kirk","Archer","Georgiou"].includes(e)&&(t="Welcome, Captain!",console.log("Welcome, Captain!")),t}
+
+*/
+
 
 //alert("I EXIST")
-console.log("CHANGE!!");
-console.log("what it works!!");
+//console.log("CHANGE!!");
+//console.log("what it works!!");
