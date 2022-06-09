@@ -150,7 +150,8 @@ async function getForcast(jsonData = {}) {
 //getForcast()
 
 
-async function testServer(num = 1) {
+//async function testServer(num = 1) {
+async function testServer(num) {
   console.log('Testing Server running');
   const msgData = {num: num}
   const options = {method: 'POST',// *GET, POST, PUT, DELETE, etc.
@@ -160,7 +161,7 @@ async function testServer(num = 1) {
                     },
                     body: JSON.stringify(msgData)
                   }
-  const response = await fetch('/test', options)
+  const response = await fetch('/testServer', options)
   const jsonRes = await response.json();
   console.log('server test done!!!', jsonRes);
   return jsonRes['num'];

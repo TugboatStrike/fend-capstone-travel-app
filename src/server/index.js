@@ -305,7 +305,7 @@ async function dateForcast(request, response) {
 }
 
 // jest testing api call
-app.post('/test', testServer);
+app.post('/testServer', testServer);
 
 async function testServer(request, response) {
   console.log('initial test setup', request.body);
