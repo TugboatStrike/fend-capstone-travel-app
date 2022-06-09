@@ -5,7 +5,7 @@
 async function handleSubmit(event) {
     event.preventDefault()
     let submitHealthy = true;
-    const formInfo = {};
+    const formInfo = {err: ''};
     let resForcast = {};
 
     // check what text was put into the form field
@@ -30,9 +30,10 @@ async function handleSubmit(event) {
       }else {
         displayText(`Please enter a destination`)
         submitHealthy = false;
+        formInfo.err = 'Error: No text to search for Destination'
       };
     };
-    if (submitHealthy) {
+    if (formInfo.err === '') {
       if (true) {
         addCard('https://placebear.com/200/300', formInfo.dateLong, 'creation');
         console.log('resForcast: ', resForcast);
@@ -173,6 +174,7 @@ async function getSentiment( data){
 // 9) client side recieve response
 // 10) client side convert to readable formate like json
 // 11) client side display message response data
+/*
 async function getForcast(jsonData = {}) {
   //console.log('getting forcast');
   const options = {method: 'POST',// *GET, POST, PUT, DELETE, etc.
@@ -187,12 +189,33 @@ async function getForcast(jsonData = {}) {
   const jsonRes = await response.json();
   //console.log('forcast fetch done!!!', jsonRes);
   return jsonRes;
+}*/
+
+async function getForcast(jsonData = {}) {
+  //console.log('getting forcast');
+  const options = {method: 'POST',// *GET, POST, PUT, DELETE, etc.
+                    credentials: 'same-origin',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(jsonData)
+                    //body: jsonData
+                  }
+  //const response = await fetch('/forcast', options)
+  const response = await jsonFetch('/forcast', options)
+  //const jsonRes = await response.json();
+  //console.log('forcast fetch done!!!', jsonRes);
+  //return jsonRes;
+  return response;
 }
+
+
 
 //getForcast()
 
 
 //async function testServer(num = 1) {
+/*
 async function testServer(num) {
   console.log('Testing Server running');
   const msgData = {num: num}
@@ -207,6 +230,77 @@ async function testServer(num) {
   const jsonRes = await response.json();
   console.log('server test done!!!', jsonRes);
   return jsonRes['num'];
+}*/
+
+async function testServer(num = 1) {
+  console.log('Testing Server running');
+  const msgData = {num: num, err: ''}
+  const options = {method: 'POST',// *GET, POST, PUT, DELETE, etc.
+                    credentials: 'same-origin',
+                    headers: {
+                      'Content-Type': 'application/json',
+                    },
+                    body: JSON.stringify(msgData)
+                  }
+  //const response = await fetch('/testServer', options)
+  const response = await jsonFetch('/testServer', options)
+  const errCheck = msgErrCheck(response, 'testServer')
+  console.log('errCheck: ', errCheck, ' data with err: ', response);
+  console.log('data: ', response.data);
+  console.log('num: ', response.data.num);
+
+  const getRes = await jsonFetch('/test')
+  const getErr = msgErrCheck(getRes, 'getTest')
+  console.log('getTest: ', getRes);
+  console.log('getErr: ', getErr);
+
+
+  //const jsonRes = await response.json();
+  //console.log('server test done!!!', jsonRes);
+  if (response.err === '') {
+    return response.data.num;
+  } else {
+    return response;
+  }
+  //return jsonRes['num'];
+}
+
+
+
+// check if the returned value is an error
+function msgErrCheck(data, txt = '') {
+  if (data.err !== '') {
+    return data.err;
+  } else if (data.msgSts !== 200) {
+    return `${txt} message error: ${data.msgSts}`;
+  }else {
+    return '';
+  }
+}
+
+async function jsonFetch(url, options = {}) {
+  let dataJson = {err: '',
+                  msgSts: '',
+                  data: {}
+                  }
+  await fetch(url, options)
+    .then(handleErrors)
+    .then(async response => {
+      dataJson.data = await response.json();
+      dataJson.msgSts = response.status;
+    }).catch(e => {
+      dataJson.err = e;
+      dataJson.msgSts = e.status;
+    })
+  return dataJson
+}
+
+// Generic way to handle erros to use with .then so the .catch will get it
+function handleErrors(response) {
+  if (!response.ok) {
+    throw Error(response.statusText);
+  }
+  return response;
 }
 
 //console.log('testServer 3: ', testServer(3));
@@ -214,6 +308,8 @@ async function testServer(num) {
 //export { testServer }
 
 /*
+
+
 function updateResults(jsonData, textRes) {
   const text = textRes;
   const sent = jsonData.agreement;
@@ -234,6 +330,7 @@ function initForm() {
   document.querySelector('#date').value = dateDashCur();
   document.querySelector('#name').value = 'Denver Colorado usa';
   displayText('Welcome, Please enter a travel destination.');
+  testServer(3);
 }
 
 export {initForm}

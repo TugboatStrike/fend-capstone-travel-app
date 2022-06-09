@@ -345,25 +345,32 @@ async function dateForcast(request, response) {
     } else {
       resMsg['weather'] = await jsonFetch(urlWeathForcast(latitude, longitude, range))
     }
-    resMsg.err = msgErrCheck(resMsg.weather, 'weather');
+    resMsg.err = await msgErrCheck(resMsg.weather, 'weather');
   }
   if (resMsg.err === '') {
-    //const cityName = resMsg.weather.data.data[arrRange].city_name;
-    const cityName = resMsg.geo.data.geonames[0].name;
+    const cityName = resMsg.weather.data.data[arrRange].city_name;
+    //const cityName = resMsg.geo.data.geonames[0].name;
     let searchStr = `${cityName} ${dest} skyline`;
     resMsg['imgArr'] = []
     resMsg.imgArr[0] = await jsonFetch(urlPixabay(searchStr))
     resMsg.err = await msgErrCheck(resMsg.imgArr[0], 'imgArr[0]')
     if (resMsg.imgArr[0].data.total === 0 && resMsg.err === '') {
+      searchStr = `airplane`;
+      resMsg.imgArr[1] = await jsonFetch(urlPixabay(searchStr, 'travel'))
+      resMsg.err = await msgErrCheck(resMsg.imgArr[1], 'imgArr[1]')
+    }
+    /*
+    if (resMsg.imgArr[0].data.total === 0 && resMsg.err === '') {
       searchStr = `${cityName} ${dest} skyline`;
       resMsg.imgArr[1] = await jsonFetch(urlPixabay(searchStr, 'places'))
       resMsg.err = await msgErrCheck(resMsg.imgArr[1], 'imgArr[1]')
-    }
+    }*/
+    /*
     if (resMsg.imgArr[1].data.total === 0 && resMsg.err === '') {
       searchStr = `airplane`;
       resMsg.imgArr[2] = await jsonFetch(urlPixabay(searchStr, 'travel'))
       resMsg.err = await msgErrCheck(resMsg.imgArr[2], 'imgArr[2]')
-    }
+    }*/
   }
 
 
