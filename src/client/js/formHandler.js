@@ -2,21 +2,15 @@
 // update date value to start with current date as default.
 //document.querySelector('#date').value = dateDashCur();
 
-
-
-
-
 function handleSubmit(event) {
     event.preventDefault()
     const formInfo = {};
 
     // check what text was put into the form field
     const formText = document.getElementById('name').value
-
     const formDate = document.getElementById('date').value
 
-    formInfo['formText'] = formText;
-    formInfo['formDate'] = formDate
+
     //const dateObj = new Date(formDate.replace(/-/g, '\/'));
     const dateObj = getDate(formDate);
     /*
@@ -26,7 +20,16 @@ function handleSubmit(event) {
                                                         weekday: 'long'
                                                       });*/
     const strDate = dateLong(dateObj);
-    const jsonDate = dateObj.toJSON();
+    //const jsonDate = dateObj.toJSON();
+    const forcastRange = dateRange(formDate, 0, 15);
+
+
+    // Add data to the form object
+    formInfo['formText'] = formText;
+    formInfo['formDate'] = formDate;
+    formInfo['range'] = forcastRange;
+    formInfo['forRange'] = forcastRange+1;
+    formInfo['dateObj'] = dateObj;
 
     console.log('created form info: ', formInfo);
     getForcast(formInfo);
@@ -38,7 +41,9 @@ function handleSubmit(event) {
     //console.log('json date: ', jsonDate);
 
     //console.log('formText: ', formText);
-    Client.checkForName(formText)
+    //Client.checkForName(formText)
+
+
 
     addCard('https://placebear.com/200/300', strDate, 'creation');
 
@@ -73,13 +78,14 @@ function handleSubmit(event) {
       }).catch(e => console.log('errResult1', e))
       */
 
+    /*
     console.log("::: Form Submitted :::")
     fetch('http://localhost:8080/test')
     .then(res => res.json())
     .then(function(res) {
         console.log('skipping msg: ', res.message);
         //document.getElementById('results').innerHTML = res.message
-    })
+    })*/
 }
 
 export { handleSubmit }
@@ -132,7 +138,7 @@ async function getSentiment( data){
 // 10) client side convert to readable formate like json
 // 11) client side display message response data
 async function getForcast(jsonData = {}) {
-  console.log('getting forcast');
+  //console.log('getting forcast');
   const options = {method: 'POST',// *GET, POST, PUT, DELETE, etc.
                     credentials: 'same-origin',
                     headers: {
@@ -143,7 +149,7 @@ async function getForcast(jsonData = {}) {
                   }
   const response = await fetch('/forcast', options)
   const jsonRes = await response.json();
-  console.log('forcast fetch done!!!', jsonRes);
+  //console.log('forcast fetch done!!!', jsonRes);
   return jsonRes;
 }
 

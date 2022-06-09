@@ -31,4 +31,5 @@ export {
 
 // update date value to start with current date as default.
 document.querySelector('#date').value = dateDashCur();
-testServer(5);
+document.querySelector('#name').value = 'Denver Colorado usa';
+//testServer(5);

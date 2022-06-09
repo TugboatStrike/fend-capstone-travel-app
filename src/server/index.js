@@ -303,6 +303,12 @@ app.post('/forcast', dateForcast)
 
 async function dateForcast(request, response) {
   console.log('request weather forcast: ', request.body);
+  const dest = request.body.formText;
+  const range = request.body.forRange;
+
+  const position = await jsonFetch(urlGeoCall(dest));
+  //const jsonPos = await position.json();
+  console.log('position data: ', position);
   response.send({response: 'it worked?'})
 }
 
