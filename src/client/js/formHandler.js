@@ -37,12 +37,12 @@ async function handleSubmit(event) {
     };
     if (formInfo.err === '') {
       const imgUrl = parseImg(resForcast.data);
-      const weather = `The weather should be ${parseWeather(resForcast.data)}`;
+      const weather = ` The weather should be ${parseWeather(resForcast.data)}`;
       const destination = `Traveling to ${formInfo.formText}.`;
       const textDisplay = `${destination}${weather}`;
       console.log('imgUrl: ', imgUrl);
       if (true) {
-        addCard('https://placebear.com/200/300', formInfo.dateLong, textDisplay);
+        addCard(imgUrl, formInfo.dateLong, textDisplay);
         console.log('resForcast: ', resForcast);
       }else {
 
@@ -55,13 +55,27 @@ async function handleSubmit(event) {
 export { handleSubmit }
 
 function parseImg(data = {}) {
-  console.log('parsing image url');
-  return ''
+  //console.log('parsing image url');
+  const elementUsed = data.imgArr.length -1;
+  const url = data.imgArr[elementUsed].data.hits[0].previewURL;
+  return url
 }
 
 function parseWeather(data = {}) {
-  console.log('parsing weather data');
-  return ''
+  //console.log('parsing weather data');
+  const elementUsed = data.weather.data.data.length -1;
+  let temp = ''
+  //console.log('element used for weather: ', elementUsed);
+  if (elementUsed == 0) {
+    //console.log('using true');
+    temp = data.weather.data.data[elementUsed].app_temp;
+
+  } else {
+    //console.log('using false');
+    temp = data.weather.data.data[elementUsed].temp;
+  }
+  const description = data.weather.data.data[elementUsed].weather.description;
+  return `${temp} fahrenheit with ${description}.`
 }
 
 

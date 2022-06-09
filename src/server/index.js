@@ -348,9 +348,10 @@ async function dateForcast(request, response) {
     resMsg.err = await msgErrCheck(resMsg.weather, 'weather');
   }
   if (resMsg.err === '') {
-    const cityName = resMsg.weather.data.data[arrRange].city_name;
+    //const cityName = resMsg.weather.data.data[arrRange].city_name;
     //const cityName = resMsg.geo.data.geonames[0].name;
-    let searchStr = `${cityName} ${dest} skyline`;
+    //let searchStr = `${cityName} ${dest} skyline`;
+    let searchStr = `${dest} skyline`;
     resMsg['imgArr'] = []
     resMsg.imgArr[0] = await jsonFetch(urlPixabay(searchStr))
     resMsg.err = await msgErrCheck(resMsg.imgArr[0], 'imgArr[0]')
