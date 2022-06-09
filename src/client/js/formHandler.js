@@ -26,7 +26,9 @@ async function handleSubmit(event) {
         formInfo['dateObj'] = dateObj;
         formInfo['dateLong'] = strDate;
         resForcast = await getForcast(formInfo);
+        formInfo.err = msgErrCheck(resForcast, 'getFrocast')
         console.log('resForcast: ', resForcast);
+        console.log('formInfo: ', formInfo);
       }else {
         displayText(`Please enter a destination`)
         submitHealthy = false;
@@ -34,98 +36,33 @@ async function handleSubmit(event) {
       };
     };
     if (formInfo.err === '') {
+      const imgUrl = parseImg(resForcast.data);
+      const weather = `The weather should be ${parseWeather(resForcast.data)}`;
+      const destination = `Traveling to ${formInfo.formText}.`;
+      const textDisplay = `${destination}${weather}`;
+      console.log('imgUrl: ', imgUrl);
       if (true) {
-        addCard('https://placebear.com/200/300', formInfo.dateLong, 'creation');
+        addCard('https://placebear.com/200/300', formInfo.dateLong, textDisplay);
         console.log('resForcast: ', resForcast);
       }else {
 
       }
 
     }
-
-
-
-
-    //const dateObj = new Date(formDate.replace(/-/g, '\/'));
-    //const dateObj = getDate(formDate);
-    /*
-    const strDate = dateObj.toLocaleString('en-US', { year: 'numeric',
-                                                        month: 'long',
-                                                        day: 'numeric',
-                                                        weekday: 'long'
-                                                      });*/
-    //const strDate = dateLong(dateObj);
-    //const jsonDate = dateObj.toJSON();
-    //const forcastRange = dateRange(formDate, 0, 15);
-
-
-    // Add data to the form object
-    //formInfo['formText'] = formText;
-    //formInfo['formDate'] = formDate;
-    //formInfo['range'] = forcastRange;
-    //formInfo['forRange'] = forcastRange+1;
-    //formInfo['dateObj'] = dateObj;
-
     console.log('created form info: ', formInfo);
-    //getForcast(formInfo);
-    //const todayTest = new Date();
-
-    //console.log('date Range: ', dateRange(formDate, 0, 15));
-    //console.log('api forcast: ', dateRange(formDate, 0, 15)+1);
-    //console.log('string date: ', strDate);
-    //console.log('json date: ', jsonDate);
-
-    //console.log('formText: ', formText);
-    //Client.checkForName(formText)
-
-
-
-    //addCard('https://placebear.com/200/300', strDate, 'creation');
-
-
-/*
-    getSentiment(createJson(formText))
-      .then(anotherRes => {
-        // updateResults(anotherRes, formText);
-        console.log('anotherRes: ', anotherRes);
-        // checking code status
-        const code = (anotherRes.status.code != 0);
-        // checking for undefined agreement
-        const defined = (anotherRes.agreement === undefined);
-        // checking for scored value
-        const scoreDefined = (anotherRes.score_tag === 'NONE');
-        if (code) {
-          //alert(`err code: ${anotherRes.status.code}
-//${anotherRes.status.msg}`);
-        //  };
-
-        }else if (defined) {
-          //alert('Please enter a different value')
-        }else if (scoreDefined) {
-          //alert('Entered Value could not be scored')
-        };
-        //}else {
-        //  updateResults(anotherRes, formText);
-        //};
-
-
-        return anotherRes;
-      }).catch(e => console.log('errResult1', e))
-      */
-
-    /*
-    console.log("::: Form Submitted :::")
-    fetch('http://localhost:8080/test')
-    .then(res => res.json())
-    .then(function(res) {
-        console.log('skipping msg: ', res.message);
-        //document.getElementById('results').innerHTML = res.message
-    })*/
 }
 
 export { handleSubmit }
 
+function parseImg(data = {}) {
+  console.log('parsing image url');
+  return ''
+}
 
+function parseWeather(data = {}) {
+  console.log('parsing weather data');
+  return ''
+}
 
 
 // create a json object dictionary with data as the key word.
