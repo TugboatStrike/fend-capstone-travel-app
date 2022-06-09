@@ -325,7 +325,8 @@ app.post('/forcast', dateForcast)
 
 async function dateForcast(request, response) {
   let reqHealth = true;
-  const resMsg = {reqMsg: request.body, err: ''}
+  //console.log('post request server msg status: ', request);
+  const resMsg = {reqMsg: request.body, err: '', msgSts: 200}
   console.log('request weather forcast: ', request.body);
   const dest = request.body.formText;
   const range = request.body.forRange;

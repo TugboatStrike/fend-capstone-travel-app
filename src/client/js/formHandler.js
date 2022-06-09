@@ -26,7 +26,11 @@ async function handleSubmit(event) {
         formInfo['dateObj'] = dateObj;
         formInfo['dateLong'] = strDate;
         resForcast = await getForcast(formInfo);
-        formInfo.err = msgErrCheck(resForcast, 'getFrocast')
+        formInfo.err = await msgErrCheck(resForcast, 'serverReply')
+
+        if (formInfo.err === '') {
+          formInfo.err = await msgErrCheck(resForcast.data, 'apiReplies')
+        }
         console.log('resForcast: ', resForcast);
         console.log('formInfo: ', formInfo);
       }else {
@@ -48,6 +52,8 @@ async function handleSubmit(event) {
 
       }
 
+    }else {
+      displayText('Search request could not be completed at this time!')
     }
     console.log('created form info: ', formInfo);
 }
@@ -154,6 +160,7 @@ async function getForcast(jsonData = {}) {
                   }
   //const response = await fetch('/forcast', options)
   const response = await jsonFetch('/forcast', options)
+  console.log('response: ', response);
   //const jsonRes = await response.json();
   //console.log('forcast fetch done!!!', jsonRes);
   //return jsonRes;
