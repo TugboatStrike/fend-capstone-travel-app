@@ -1,5 +1,7 @@
 var path = require('path')
-const express = require('express')
+//const express = require('express')
+// moved app outside and then require it for jest Testing
+const app = require("./js/app")
 const mockAPIResponse = require('./mockAPI.js')
 const dotenv = require('dotenv');
 const bodyParser = require('body-parser');
@@ -12,8 +14,8 @@ const fs = require('fs');
 
 dotenv.config(); // allowing the .env file to be called by dotenv module.
 
-
-const app = express()
+// again express moved to outside file.
+//const app = express()
 
 /**** Middleware ****/
 
@@ -26,8 +28,8 @@ app.use(bodyParser.json());
 // Cors for cross origin allowance
 //app.use(cors());
 
-
-app.use(express.static('dist'))
+// again express moved to outside file
+//app.use(express.static('dist'))
 
 console.log(__dirname)
 
