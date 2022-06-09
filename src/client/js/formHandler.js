@@ -2,37 +2,71 @@
 // update date value to start with current date as default.
 //document.querySelector('#date').value = dateDashCur();
 
-function handleSubmit(event) {
+async function handleSubmit(event) {
     event.preventDefault()
+    let submitHealthy = true;
     const formInfo = {};
+    let resForcast = {};
 
     // check what text was put into the form field
     const formText = document.getElementById('name').value
     const formDate = document.getElementById('date').value
 
+    if (submitHealthy) {
+      if (formText) {
+        displayText(`Traveling to ${formText}`)
+        const dateObj = getDate(formDate);
+        const strDate = dateLong(dateObj);
+        const forcastRange = dateRange(formDate, 0, 15);
+        // Add data to the form object
+        formInfo['formText'] = formText;
+        formInfo['formDate'] = formDate;
+        formInfo['range'] = forcastRange;
+        formInfo['forRange'] = forcastRange+1;
+        formInfo['dateObj'] = dateObj;
+        formInfo['dateLong'] = strDate;
+        resForcast = await getForcast(formInfo);
+        console.log('resForcast: ', resForcast);
+      }else {
+        displayText(`Please enter a destination`)
+        submitHealthy = false;
+      };
+    };
+    if (submitHealthy) {
+      if (true) {
+        addCard('https://placebear.com/200/300', formInfo.dateLong, 'creation');
+        console.log('resForcast: ', resForcast);
+      }else {
+
+      }
+
+    }
+
+
+
 
     //const dateObj = new Date(formDate.replace(/-/g, '\/'));
-    const dateObj = getDate(formDate);
+    //const dateObj = getDate(formDate);
     /*
     const strDate = dateObj.toLocaleString('en-US', { year: 'numeric',
                                                         month: 'long',
                                                         day: 'numeric',
                                                         weekday: 'long'
                                                       });*/
-    const strDate = dateLong(dateObj);
+    //const strDate = dateLong(dateObj);
     //const jsonDate = dateObj.toJSON();
-    const forcastRange = dateRange(formDate, 0, 15);
+    //const forcastRange = dateRange(formDate, 0, 15);
 
 
     // Add data to the form object
-    formInfo['formText'] = formText;
-    formInfo['formDate'] = formDate;
-    formInfo['range'] = forcastRange;
-    formInfo['forRange'] = forcastRange+1;
-    formInfo['dateObj'] = dateObj;
+    //formInfo['formText'] = formText;
+    //formInfo['formDate'] = formDate;
+    //formInfo['range'] = forcastRange;
+    //formInfo['forRange'] = forcastRange+1;
+    //formInfo['dateObj'] = dateObj;
 
     console.log('created form info: ', formInfo);
-    getForcast(formInfo);
+    //getForcast(formInfo);
     //const todayTest = new Date();
 
     //console.log('date Range: ', dateRange(formDate, 0, 15));
@@ -45,7 +79,7 @@ function handleSubmit(event) {
 
 
 
-    addCard('https://placebear.com/200/300', strDate, 'creation');
+    //addCard('https://placebear.com/200/300', strDate, 'creation');
 
 
 /*
@@ -89,6 +123,8 @@ function handleSubmit(event) {
 }
 
 export { handleSubmit }
+
+
 
 
 // create a json object dictionary with data as the key word.
@@ -175,9 +211,9 @@ async function testServer(num) {
 
 //console.log('testServer 3: ', testServer(3));
 
-export { testServer }
+//export { testServer }
 
-
+/*
 function updateResults(jsonData, textRes) {
   const text = textRes;
   const sent = jsonData.agreement;
@@ -188,7 +224,20 @@ function updateResults(jsonData, textRes) {
   || Text being checked:
   ${text}`;
   document.getElementById('results').innerHTML = resaultMsg;
+}*/
+
+function displayText(text) {
+  document.getElementById('results').innerHTML = text;
 }
+
+function initForm() {
+  document.querySelector('#date').value = dateDashCur();
+  document.querySelector('#name').value = 'Denver Colorado usa';
+  displayText('Welcome, Please enter a travel destination.');
+}
+
+export {initForm}
+
 
 // checks if text is a url starting with http. bool reply
 function isUrl(text) {
@@ -317,7 +366,7 @@ function dateDashCur() {
   return `${year}-${month}-${day}`;
 }
 
-export { dateDashCur }
+//export { dateDashCur }
 
 // adds zero's to the string until the expected length is reached.
 function addZero(numStr, len=2) {

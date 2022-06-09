@@ -148,6 +148,8 @@ function urlGeoCall(text) {
 }
 
 
+
+
 /*
 async function weathCurrent(lat, lon) {
   //const key = process.env.WEATHER_BIT_API_KEY;
@@ -239,10 +241,30 @@ function intRange(value, min=0, max=100) {
 };
 
 // fetch with assumed json data recieved.
+// return empty object if there is a error converting to json
 async function jsonFetch(url) {
-  const data = await fetch(url);
-  const dataJson = await data.json();
+  let dataJson = {err: '',
+                  msgSts: '',
+                  data: {}
+                  }
+  await fetch(url)
+    .then(handleErrors)
+    .then(async response => {
+      dataJson.data = await response.json();
+      dataJson.msgSts = response.status;
+    }).catch(e => {
+      dataJson.err = e;
+      dataJson.msgSts = e.status;
+    })
   return dataJson
+}
+
+// Generic way to handle erros to use with .then so the .catch will get it
+function handleErrors(response) {
+  if (!response.ok) {
+    throw Error(response.statusText);
+  }
+  return response;
 }
 
 /*
@@ -260,7 +282,7 @@ jsonFetch(urlGeoCall('chipita park colorado usa'))
   .catch(e => console.log('errGeoCall2', e))*/
 
 
-function urlPixabay(search) {
+function urlPixabay(search, catTxt = 'buildings') {
   const key = `&key=${process.env.PIXABAY_API_KEY}`;
     // URL for initial API
   const protocol = `https://`;
@@ -270,7 +292,7 @@ function urlPixabay(search) {
   const query = `q=${encodeURIComponent(search)}`;
   const imgType = `&image_type=photo`; // all, photo, illustration, vector, Def: all
   const orin = `&orientation=horizontal` // all, horizontal, vertical, Def: all
-  const cat = `&category=buildings`;
+  const cat = `&category=${catTxt}`;
               // Accepted values: backgrounds, fashion, nature, science,
               // education, feelings, health, people, religion,
               // places, animals, industry, computer, food,
@@ -302,15 +324,70 @@ jsonFetch(urlPixabay('denver colorado skyline'))
 app.post('/forcast', dateForcast)
 
 async function dateForcast(request, response) {
+  let reqHealth = true;
+  const resMsg = {reqMsg: request.body, err: ''}
   console.log('request weather forcast: ', request.body);
   const dest = request.body.formText;
   const range = request.body.forRange;
+  const arrRange = request.body.range;
 
-  const position = await jsonFetch(urlGeoCall(dest));
-  //const jsonPos = await position.json();
-  console.log('position data: ', position);
-  response.send({response: 'it worked?'})
+  /*const geoData = await jsonFetch(urlGeoCall(dest))
+  resMsg['geo'] = geoData;
+  resMsg.err = await msgErrCheck(geoData, 'geo');*/
+
+  resMsg['geo'] = await jsonFetch(urlGeoCall(dest))
+  resMsg.err = await msgErrCheck(resMsg.geo, 'geo')
+  if (resMsg.err === '') {
+    const latitude = resMsg.geo.data.geonames[0].lat;
+    const longitude = resMsg.geo.data.geonames[0].lng;
+    if (range === 1) {
+      resMsg['weather'] = await jsonFetch(urlWeathCur(latitude, longitude))
+    } else {
+      resMsg['weather'] = await jsonFetch(urlWeathForcast(latitude, longitude, range))
+    }
+    resMsg.err = msgErrCheck(resMsg.weather, 'weather');
+  }
+  if (resMsg.err === '') {
+    //const cityName = resMsg.weather.data.data[arrRange].city_name;
+    const cityName = resMsg.geo.data.geonames[0].name;
+    let searchStr = `${cityName} ${dest} skyline`;
+    resMsg['imgArr'] = []
+    resMsg.imgArr[0] = await jsonFetch(urlPixabay(searchStr))
+    resMsg.err = await msgErrCheck(resMsg.imgArr[0], 'imgArr[0]')
+    if (resMsg.imgArr[0].data.total === 0 && resMsg.err === '') {
+      searchStr = `${cityName} ${dest} skyline`;
+      resMsg.imgArr[1] = await jsonFetch(urlPixabay(searchStr, 'places'))
+      resMsg.err = await msgErrCheck(resMsg.imgArr[1], 'imgArr[1]')
+    }
+    if (resMsg.imgArr[1].data.total === 0 && resMsg.err === '') {
+      searchStr = `airplane`;
+      resMsg.imgArr[2] = await jsonFetch(urlPixabay(searchStr, 'travel'))
+      resMsg.err = await msgErrCheck(resMsg.imgArr[2], 'imgArr[2]')
+    }
+  }
+
+
+
+
+
+
+  response.status(200).send(resMsg);
 }
+
+// check if the returned value is an error
+function msgErrCheck(data, txt = '') {
+  if (data.err !== '') {
+    return data.err;
+  } else if (data.msgSts !== 200) {
+    return `${txt} message error: ${data.msgSts}`;
+  }else {
+    return '';
+  }
+}
+
+
+
+
 
 // jest testing api call
 app.post('/testServer', testServer);
@@ -321,4 +398,31 @@ async function testServer(request, response) {
   msgData['num'] += 1;
   console.log('msgData: ', msgData);
   response.send(msgData);
+}
+
+// temp api json data
+//const geoTemp = {}
+const geoTemp = {
+  totalResultsCount: 10017,
+  geonames: [
+
+    {
+      adminCode1: 'CO',
+      lng: '-104.9847',
+      geonameId: 5419384,
+      toponymName: 'Denver',
+      countryId: '6252001',
+      fcl: 'P',
+      population: 715522,
+      countryCode: 'US',
+      name: 'Denver',
+      fclName: 'city, village,...',
+      adminCodes1: [Object],
+      countryName: 'United States',
+      fcodeName: 'seat of a first-order administrative division',
+      adminName1: 'Colorado',
+      lat: '39.73915',
+      fcode: 'PPLA'
+    }
+  ]
 }

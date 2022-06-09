@@ -1,7 +1,8 @@
 import { checkForName } from './js/nameChecker'
 import { handleSubmit } from './js/formHandler'
-import { testServer } from './js/formHandler'
-import { dateDashCur } from './js/formHandler'
+//import { testServer } from './js/formHandler'
+//import { dateDashCur } from './js/formHandler'
+import { initForm } from './js/formHandler'
 
 import './styles/resets.scss';
 import './styles/base.scss';
@@ -13,7 +14,7 @@ import './styles/card.scss';
 export {
   checkForName,
   handleSubmit,
-  testServer
+  //testServer
 }
 
 // console.log(checkForName);
@@ -30,6 +31,7 @@ export {
 
 
 // update date value to start with current date as default.
-document.querySelector('#date').value = dateDashCur();
-document.querySelector('#name').value = 'Denver Colorado usa';
+//document.querySelector('#date').value = dateDashCur();
+//document.querySelector('#name').value = 'Denver Colorado usa';
+initForm();
 //testServer(5);
