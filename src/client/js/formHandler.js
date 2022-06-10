@@ -1,6 +1,4 @@
 
-// update date value to start with current date as default.
-//document.querySelector('#date').value = dateDashCur();
 
 async function handleSubmit(event) {
     event.preventDefault()
@@ -31,8 +29,6 @@ async function handleSubmit(event) {
         if (formInfo.err === '') {
           formInfo.err = await msgErrCheck(resForcast.data, 'apiReplies')
         }
-        console.log('resForcast: ', resForcast);
-        console.log('formInfo: ', formInfo);
       }else {
         displayText(`Please enter a destination`)
         submitHealthy = false;
@@ -44,42 +40,29 @@ async function handleSubmit(event) {
       const weather = ` The weather should be ${parseWeather(resForcast.data)}`;
       const destination = `Traveling to ${formInfo.formText}.`;
       const textDisplay = `${destination}${weather}`;
-      console.log('imgUrl: ', imgUrl);
-      if (true) {
-        addCard(imgUrl, formInfo.dateLong, textDisplay);
-        console.log('resForcast: ', resForcast);
-      }else {
-
-      }
-
+      addCard(imgUrl, formInfo.dateLong, textDisplay);
     }else {
       displayText('Search request could not be completed at this time!')
     }
-    console.log('created form info: ', formInfo);
 }
 
 export { handleSubmit }
 
+// parse img url from recieved data
 function parseImg(data = {}) {
-  //console.log('parsing image url');
   const elementUsed = data.imgArr.length -1;
   const url = data.imgArr[elementUsed].data.hits[0].previewURL;
   return url
 }
 
 function parseWeather(data = {}) {
-  //console.log('parsing weather data');
   const elementUsed = data.weather.data.data.length -1;
-  let temp = ''
-  //console.log('element used for weather: ', elementUsed);
+  let temp = '';
   if (elementUsed == 0) {
-    //console.log('using true');
     temp = data.weather.data.data[elementUsed].app_temp;
-
   } else {
-    //console.log('using false');
     temp = data.weather.data.data[elementUsed].temp;
-  }
+  };
   const description = data.weather.data.data[elementUsed].weather.description;
   return `${temp} fahrenheit with ${description}.`
 }
@@ -98,8 +81,6 @@ function createJson(text) {
 
 // data must be json format
 async function getSentiment( data){
-    //const url = ''
-    console.log('the  data : ',  data );
     const response = await fetch('/sentiment', {
       method: 'POST', // *GET, POST, PUT, DELETE, etc.
       credentials: 'same-origin',  // no-cors, *cors, same-origin
@@ -109,87 +90,23 @@ async function getSentiment( data){
       body: JSON.stringify(data)
     })
     const jsonResponse = await response.json();
-    //console.log('json res from server: ', jsonResponse);
     return jsonResponse;
 }
 
-// creating server API
-// 0) determine message options to be used
-// 1) create server call with simple log to be triggered
-// 1.1) create function to be called by api message
-// 2) create client call to api to trigger api call only for log check
-// 3) client side add body with empty message
-// 4) server side make sure api still triggers
-// 5) server side display the message
-// 6) client side add something to empty message
-// 6.1) note this required body: JSON.stringify(<json object>)
-// 7) server log message when recieved
-// 7.1) note this just needs request.body to display message
-// 7.2) server does require app.use(bodyParser.json()); as middleware
-// 7.3) bodyParser.json allows server to read message. doesn't effect api call
-// 8) server side create response and send back to Client
-// 9) client side recieve response
-// 10) client side convert to readable formate like json
-// 11) client side display message response data
-/*
+// api call to the server to get the forecast.
 async function getForcast(jsonData = {}) {
-  //console.log('getting forcast');
   const options = {method: 'POST',// *GET, POST, PUT, DELETE, etc.
                     credentials: 'same-origin',
                     headers: {
                       'Content-Type': 'application/json',
                     },
                     body: JSON.stringify(jsonData)
-                    //body: jsonData
                   }
-  const response = await fetch('/forcast', options)
-  const jsonRes = await response.json();
-  //console.log('forcast fetch done!!!', jsonRes);
-  return jsonRes;
-}*/
-
-async function getForcast(jsonData = {}) {
-  //console.log('getting forcast');
-  const options = {method: 'POST',// *GET, POST, PUT, DELETE, etc.
-                    credentials: 'same-origin',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(jsonData)
-                    //body: jsonData
-                  }
-  //const response = await fetch('/forcast', options)
   const response = await jsonFetch('/forcast', options)
-  console.log('response: ', response);
-  //const jsonRes = await response.json();
-  //console.log('forcast fetch done!!!', jsonRes);
-  //return jsonRes;
   return response;
 }
 
-
-
-//getForcast()
-
-
-//async function testServer(num = 1) {
-/*
-async function testServer(num) {
-  console.log('Testing Server running');
-  const msgData = {num: num}
-  const options = {method: 'POST',// *GET, POST, PUT, DELETE, etc.
-                    credentials: 'same-origin',
-                    headers: {
-                      'Content-Type': 'application/json',
-                    },
-                    body: JSON.stringify(msgData)
-                  }
-  const response = await fetch('/testServer', options)
-  const jsonRes = await response.json();
-  console.log('server test done!!!', jsonRes);
-  return jsonRes['num'];
-}*/
-
+// api call to the server to test api calls working
 async function testServer(num = 1) {
   console.log('Testing Server running');
   const msgData = {num: num, err: ''}
@@ -200,29 +117,16 @@ async function testServer(num = 1) {
                     },
                     body: JSON.stringify(msgData)
                   }
-  //const response = await fetch('/testServer', options)
   const response = await jsonFetch('/testServer', options)
   const errCheck = msgErrCheck(response, 'testServer')
-  console.log('errCheck: ', errCheck, ' data with err: ', response);
-  console.log('data: ', response.data);
-  console.log('num: ', response.data.num);
-
   const getRes = await jsonFetch('/test')
   const getErr = msgErrCheck(getRes, 'getTest')
-  console.log('getTest: ', getRes);
-  console.log('getErr: ', getErr);
-
-
-  //const jsonRes = await response.json();
-  //console.log('server test done!!!', jsonRes);
   if (response.err === '') {
     return response.data.num;
   } else {
     return response;
   }
-  //return jsonRes['num'];
 }
-
 
 
 // check if the returned value is an error
@@ -236,6 +140,7 @@ function msgErrCheck(data, txt = '') {
   }
 }
 
+// Fetch with data conversion to json with error handling
 async function jsonFetch(url, options = {}) {
   let dataJson = {err: '',
                   msgSts: '',
@@ -261,34 +166,17 @@ function handleErrors(response) {
   return response;
 }
 
-//console.log('testServer 3: ', testServer(3));
-
-//export { testServer }
-
-/*
-
-
-function updateResults(jsonData, textRes) {
-  const text = textRes;
-  const sent = jsonData.agreement;
-  const conf = jsonData.confidence;
-  const tag = jsonData.score_tag;
-  const resaultMsg = String.raw`Sentiment: ${sent} | Confidence: ${conf} | Score Tag: ${tag}
-
-  || Text being checked:
-  ${text}`;
-  document.getElementById('results').innerHTML = resaultMsg;
-}*/
-
+// display text on the html display information for the user
 function displayText(text) {
   document.getElementById('results').innerHTML = text;
 }
 
+// initilize the form with starting values like the current day date
 function initForm() {
   document.querySelector('#date').value = dateDashCur();
-  document.querySelector('#name').value = 'Denver Colorado usa';
+  //document.querySelector('#name').value = 'Denver Colorado usa';
   displayText('Welcome, Please enter a travel destination.');
-  testServer(3);
+  //testServer(3);
 }
 
 export {initForm}
@@ -298,7 +186,6 @@ export {initForm}
 function isUrl(text) {
   const regex = /http/;
   const result = regex.test(text);
-  //console.log("regex: ", result);
   return result;
 }
 
@@ -351,6 +238,7 @@ function dateRange(dateData, min = 0, max = 100) {
   return rangeDays;
 }
 
+// convert date to be written out in the long format
 function dateLong(dObj) {
   const options = { year: 'numeric',
                     month: 'long',
@@ -387,7 +275,6 @@ function intRangeUp(value, min=0, max=100) {
   }else if (max < value) {
     value = max;
     notChanged = false;
-  //}else if (initValue != value && value!==min && value!==max) {
   }
   value = parseInt(value); // truncating any floats
   if (initValue != value && notChanged) {
@@ -421,8 +308,6 @@ function dateDashCur() {
   return `${year}-${month}-${day}`;
 }
 
-//export { dateDashCur }
-
 // adds zero's to the string until the expected length is reached.
 function addZero(numStr, len=2) {
   numStr = numStr.toString(); // consvert to string
@@ -431,21 +316,3 @@ function addZero(numStr, len=2) {
   }
   return numStr
 };
-
-/*
-addCard('https://placebear.com/200/300', newDate, 'some text different');
-addCard('https://placebear.com/200/300', newDate, 'card 2');
-addCard('https://placebear.com/200/300', newDate, 'card 3');
-addCard('https://placebear.com/200/300', newDate, 'card 4');
-addCard('https://placebear.com/200/300', newDate, 'card 5');
-*/
-
-/*
-const cardList = document.querySelectorAll('.card');
-console.log('card list: ', cardList);
-console.log('card list len: ', cardList.length);
-cardList[0].remove();
-console.log('card list: ', cardList);
-const cardList2 = document.querySelectorAll('.card');
-console.log('card list2: ', cardList2);
-*/

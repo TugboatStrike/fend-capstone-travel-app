@@ -31,7 +31,7 @@ app.use(bodyParser.json());
 // again express moved to outside file
 //app.use(express.static('dist'))
 
-console.log(__dirname)
+console.log(__dirname);
 
 // initial webpage call
 app.get('/', function (req, res) {
@@ -43,6 +43,7 @@ app.listen(8080, function () {
     console.log('Example app listening on port 8080!')
 });
 
+// testing with fake api data
 app.get('/test', function (req, res) {
     res.send(mockAPIResponse)
 });
@@ -104,8 +105,6 @@ app.post('/sentiment', function(request, response) {
     const dataText = request.body.data;
     const isUrl = request.body.is_url;
     let urlString = '';
-    console.log('req Body: ', request.body);
-    console.log('start sentiment');
     if (isUrl) {
       urlString = urlUrl(dataText, mc.types.sent)
     } else {
@@ -115,21 +114,7 @@ app.post('/sentiment', function(request, response) {
       .then(resJson => {
         response.json(resJson);
       }).catch(e => console.log('errSend1',e))
-    console.log('end sentiment');
 })
-
-/*
-async function geoCall(text) {
-  const search = encodeURIComponent(text);
-  const username = process.env.GEO_NAMES_USERNAME
-  const url = `http://api.geonames.org/searchJSON?q=${search}&maxRows=10&username=${username}`;
-  const data = await fetch(url)
-  const dataJson = await data.json();
-  //console.log('geoCall: ', data);
-  console.log('geoJson: ', dataJson);
-};*/
-
-//geoCall('colorado springs colorado usa')
 
 // url creation for geo call query for lat and long details
 function urlGeoCall(text) {
@@ -148,37 +133,6 @@ function urlGeoCall(text) {
 }
 
 
-
-
-/*
-async function weathCurrent(lat, lon) {
-  //const key = process.env.WEATHER_BIT_API_KEY;
-  const h = `https://`;
-  const api = `api.weatherbit.io/v2.0/current?`;
-  const k = `&key=${process.env.WEATHER_BIT_API_KEY}`;
-  const u = `&units=I`;
-  const pos = `lat=${lat}&lon=${lon}`;
-  //const url = `https://api.weatherbit.io/v2.0/current?lat=${lat}&lon=${lon}&units=I&key=${key}`
-  const url = `${h}${api}${pos}${u}${k}`
-  const data = await fetch(url);
-  const dataJson = await data.json();
-  console.log('weath Current: ', dataJson);
-};*/
-
-// New York lat lon lat=35.7796&lon=-78.6382
-//weathCurrent(35.7796, -78.6382);
-
-/*
-function urlWeathCur(lat, lon) {
-  const h = `https://`;
-  const api = `api.weatherbit.io/v2.0/current?`;
-  const k = `&key=${process.env.WEATHER_BIT_API_KEY}`;
-  const u = `&units=I`;
-  const pos = `lat=${lat}&lon=${lon}`;
-  const url = `${h}${api}${pos}${u}${k}`
-  return url
-}*/
-
 // url creation for weatherbit current day weather
 function urlWeathCur(lat, lon) {
   const key = `&key=${process.env.WEATHER_BIT_API_KEY}`;
@@ -195,9 +149,6 @@ function urlWeathCur(lat, lon) {
   return url
 }
 
-/*
-const testUrl = urlWeathCur(35.7796, -78.6382);
-console.log('testUrl: ', testUrl);*/
 
 // url creation for weatherbit 1-16 day forcast
 function urlWeathForcast(lat, lon, length = 1) {
@@ -214,7 +165,6 @@ function urlWeathForcast(lat, lon, length = 1) {
     // Final API URL
   const url = `${api}${options}${key}`;
   return url;
-  //https://api.weatherbit.io/v2.0/forecast/daily?lat=35.7796&lon=-78.6382&units=I&days=1&key=ddff9affd7fe42e7b2c15f2e5c533ab6
 }
 
 // check if value is an intiger and within range of values as intiger.
@@ -267,21 +217,8 @@ function handleErrors(response) {
   return response;
 }
 
-/*
-jsonFetch(urlWeathCur(35.7796, -78.6382))
-  .then(jsonData => console.log('then json: ', jsonData))
-  .catch(e => console.log('errJFetch1: ', e))*/
 
-/*
-  jsonFetch(urlWeathForcast(35.7796, -78.6382, 2))
-    .then(jsonData => console.log('forcast json: ', jsonData))
-    .catch(e => console.log('errJFetch1: ', e))*/
-/*
-jsonFetch(urlGeoCall('chipita park colorado usa'))
-  .then(jsonData => console.log('geo data: ', jsonData))
-  .catch(e => console.log('errGeoCall2', e))*/
-
-
+// Generate pixabay url for api call
 function urlPixabay(search, catTxt = 'buildings') {
   const key = `&key=${process.env.PIXABAY_API_KEY}`;
     // URL for initial API
@@ -308,33 +245,16 @@ function urlPixabay(search, catTxt = 'buildings') {
   return url
 }
 
-//console.log('pix url: ', urlPixabay('Denver colorado skyline'));
-
-/*
-// saving files to server
-jsonFetch(urlPixabay('denver colorado skyline'))
-  .then(jsonData => {
-    //console.log('Pix Data: ', jsonData)
-    console.log('webImgUrl: ', jsonData.hits[0].webformatURL);
-    console.log('webImgID: ', jsonData.hits[0].id);
-    console.log('Hit Total: ', jsonData.total);
-  }).catch(e => console.log('errPix1', e))*/
-
 
 app.post('/forcast', dateForcast)
 
+// API call to combine 3 api calls with data and error handling
 async function dateForcast(request, response) {
   let reqHealth = true;
-  //console.log('post request server msg status: ', request);
   const resMsg = {reqMsg: request.body, err: '', msgSts: 200}
-  console.log('request weather forcast: ', request.body);
   const dest = request.body.formText;
   const range = request.body.forRange;
   const arrRange = request.body.range;
-
-  /*const geoData = await jsonFetch(urlGeoCall(dest))
-  resMsg['geo'] = geoData;
-  resMsg.err = await msgErrCheck(geoData, 'geo');*/
 
   resMsg['geo'] = await jsonFetch(urlGeoCall(dest))
   resMsg.err = await msgErrCheck(resMsg.geo, 'geo')
@@ -349,9 +269,6 @@ async function dateForcast(request, response) {
     resMsg.err = await msgErrCheck(resMsg.weather, 'weather');
   }
   if (resMsg.err === '') {
-    //const cityName = resMsg.weather.data.data[arrRange].city_name;
-    //const cityName = resMsg.geo.data.geonames[0].name;
-    //let searchStr = `${cityName} ${dest} skyline`;
     let searchStr = `${dest} skyline`;
     resMsg['imgArr'] = []
     resMsg.imgArr[0] = await jsonFetch(urlPixabay(searchStr))
@@ -361,25 +278,7 @@ async function dateForcast(request, response) {
       resMsg.imgArr[1] = await jsonFetch(urlPixabay(searchStr, 'travel'))
       resMsg.err = await msgErrCheck(resMsg.imgArr[1], 'imgArr[1]')
     }
-    /*
-    if (resMsg.imgArr[0].data.total === 0 && resMsg.err === '') {
-      searchStr = `${cityName} ${dest} skyline`;
-      resMsg.imgArr[1] = await jsonFetch(urlPixabay(searchStr, 'places'))
-      resMsg.err = await msgErrCheck(resMsg.imgArr[1], 'imgArr[1]')
-    }*/
-    /*
-    if (resMsg.imgArr[1].data.total === 0 && resMsg.err === '') {
-      searchStr = `airplane`;
-      resMsg.imgArr[2] = await jsonFetch(urlPixabay(searchStr, 'travel'))
-      resMsg.err = await msgErrCheck(resMsg.imgArr[2], 'imgArr[2]')
-    }*/
   }
-
-
-
-
-
-
   response.status(200).send(resMsg);
 }
 
@@ -395,43 +294,11 @@ function msgErrCheck(data, txt = '') {
 }
 
 
-
-
-
 // jest testing api call
 app.post('/testServer', testServer);
 
 async function testServer(request, response) {
-  console.log('initial test setup', request.body);
   const msgData = request.body;
   msgData['num'] += 1;
-  console.log('msgData: ', msgData);
   response.send(msgData);
-}
-
-// temp api json data
-//const geoTemp = {}
-const geoTemp = {
-  totalResultsCount: 10017,
-  geonames: [
-
-    {
-      adminCode1: 'CO',
-      lng: '-104.9847',
-      geonameId: 5419384,
-      toponymName: 'Denver',
-      countryId: '6252001',
-      fcl: 'P',
-      population: 715522,
-      countryCode: 'US',
-      name: 'Denver',
-      fclName: 'city, village,...',
-      adminCodes1: [Object],
-      countryName: 'United States',
-      fcodeName: 'seat of a first-order administrative division',
-      adminName1: 'Colorado',
-      lat: '39.73915',
-      fcode: 'PPLA'
-    }
-  ]
 }
